@@ -30,18 +30,18 @@ api_router = APIRouter(
 api_router.include_router(
     router=health_routes,
 )
-api_router.include_router(
-    prefix="/meme",
-    router=memes_routes
-)
+# api_router.include_router(
+#     prefix="/meme",
+#     router=memes_routes
+# )
 api_router.include_router(
     prefix="/emoji",
-    router=emojis_routes
-)
-api_router.include_router(
-    prefix="/bqb",
     router=bqb_routes
 )
+# api_router.include_router(
+#     prefix="/bqb",
+#     router=bqb_routes
+# )
 # api_router.include_router(
 #     prefix="/admin",
 #     router=admin_routes

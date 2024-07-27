@@ -4,7 +4,8 @@ from typing import List
 from fastapi import APIRouter, Query
 
 from app.models.bqb import BQB
-from app.schemas.response import Success, SuccessExtra
+from app.schemas.response import Success, SuccessExtra, Fail
+from app.utils.nsfw import check_word
 
 logger = logging.getLogger(__name__)
 routes = APIRouter()
@@ -33,15 +34,20 @@ async def bqb_random(
     response_model=Success[List[str]],
 )
 async def bqb_list(
-    name: str = Query(None, description="名称", example="安排"),
-    type: str = Query(None, description="类型", example="小恐龙"),
-    tag: List[str] = Query([], description="标签", example=["猫猫"]),
-    size: int = Query(20, description="页面记录数量", example=20),
+    name: str = Query(None, description="名称", example="困"),
     page: int = Query(1, description="页码数", example=1),
+    size: int = Query(20, description="页面记录数量", example=20),
 ):
+    if name is not None and await check_word(name):
+        return Fail(msg="请输入文明用语")
+    filter = {} if name is None else {
+        "$or": [
+            {"name": {"$regex": name}},
+            {"type": {"$regex": name}}
+        ]
+    }
     result = []
-    async for record in BQB.find_many({
-    }, skip=size*(page-1), limit=size):
+    async for record in BQB.find_many(filter, skip=size*(page-1), limit=size):
         result.append(record.url)
     return SuccessExtra(
         data=result,

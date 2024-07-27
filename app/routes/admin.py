@@ -140,3 +140,65 @@ async def init_bqb(
         logger.info(f"已处理第 {index} 个表情包 {line['name']}")
     await BQB.insert_many(records)
     return Success()
+
+
+@routes.post(
+    "/refresh_bqb",
+    tags=["Admin"],
+    summary="更新表情包",
+    description="更新表情包",
+    response_model=Success,
+)
+async def refresh_bqb(
+):
+    token = await get_token()
+    for _dir in (settings.BASE_DIR/'gitbqb').iterdir():
+        if _dir.is_file():
+            continue
+        logger.info(f"当前位于文件夹 {_dir.name}")
+        for _file in _dir.iterdir():
+            if _file.name in [".DS_Store", ".gitkeep"]:
+                continue
+            logger.info(f"上传表情包 {_file.name}")
+            res = requests.post(
+                url=f"{settings.IMAGES_URL}/upload",
+                headers={
+                    'Accept': 'application/json',
+                    'Authorization': f"Bearer {token}",
+                },
+                files={
+                    "file": open(_file, 'rb'),
+                }
+            ).json()
+            if not res["status"]:
+                logger.info(_file)
+                logger.info(res)
+                continue
+            record = BQB(
+                key=res["data"]["key"],
+                name=_file.name,
+                type=_dir.name,
+                url=res["data"]["links"]["url"],
+                tags=[],
+                likes=0,
+                dislikes=0,
+            )
+            await BQB.insert(record)
+            time.sleep(1)
+    return Success()
+
+
+@routes.post(
+    "/remove_github",
+    tags=["Admin"],
+    summary="更新表情包",
+    description="更新表情包",
+    response_model=Success,
+)
+async def remove_github(
+):
+    async for obj in BQB.all():
+        if obj.url.host == 'raw.githubusercontent.com':
+            print(obj.name)
+            await obj.delete()
+    return Success()
