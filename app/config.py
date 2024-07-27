@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     IMAGES_USERNAME: str = ""
     IMAGES_PASSWORD: str = ""
 
+    # init_data
+    DATA_URL: str = ""
+
     DEBUGGER: bool = False
     LOG_LEVEL: int = logging.INFO
 

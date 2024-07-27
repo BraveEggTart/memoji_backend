@@ -1,6 +1,7 @@
 import logging
 import json
 import time
+from uuid import uuid4
 
 import requests
 from fastapi import APIRouter
@@ -9,6 +10,7 @@ from app.config import settings
 from app.models.emojis import Emojis
 from app.models.memes import Memes
 from app.models.words import Words
+from app.models.bqb import BQB
 from app.schemas.response import Success
 from app.utils.auth import get_token
 
@@ -109,4 +111,32 @@ async def delete():
         )
         await obj.delete()
         logger.info(f"删除 Memes {obj.name} 成功")
+    return Success()
+
+
+@routes.post(
+    "/init_bqb",
+    tags=["Admin"],
+    summary="上传",
+    description="上传至图床",
+    response_model=Success,
+)
+async def init_bqb(
+):
+    res = requests.get(
+        url=settings.DATA_URL
+    ).json()
+    records = []
+    for index, line in enumerate(res["data"]):
+        records.append(BQB(
+            key=str(uuid4()),
+            name=line["name"],
+            type=line["category"],
+            url=line["url"],
+            tags=[],
+            likes=0,
+            dislikes=0,
+        ))
+        logger.info(f"已处理第 {index} 个表情包 {line['name']}")
+    await BQB.insert_many(records)
     return Success()

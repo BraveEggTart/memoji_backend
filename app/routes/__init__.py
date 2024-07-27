@@ -7,6 +7,7 @@ from app.routes.memes import routes as memes_routes
 from app.routes.emojis import routes as emojis_routes
 from app.routes.admin import routes as admin_routes
 from app.routes.nsfw import routes as nsfw_routes
+from app.routes.bqb import routes as bqb_routes
 
 logger = logging.getLogger(__name__)
 api_router = APIRouter(
@@ -36,6 +37,10 @@ api_router.include_router(
 api_router.include_router(
     prefix="/emoji",
     router=emojis_routes
+)
+api_router.include_router(
+    prefix="/bqb",
+    router=bqb_routes
 )
 # api_router.include_router(
 #     prefix="/admin",
