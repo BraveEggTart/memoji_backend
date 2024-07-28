@@ -23,15 +23,24 @@ class Settings(BaseSettings):
 
     # datetime format
     DATETIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
+    DATE_FORMAT: str = "%Y-%m-%d"
     DATETIME_TIMEZONE: str = "Asia/Shanghai"
 
     # openssl rand -hex 32
     SECRET_KEY: str = ""
     PREFIX: str = "/api"
+    RATE_LIMIT_MINUTES: int = 1
+    RATE_LIMIT: int = 100
 
     # Database
     DB_URL: str = ""
     DB_NAME: str = ""
+
+    # REDIS
+    REDIS_URL: str = ""
+    REDIS_PORT: str = ""
+    REDIS_DB: str = ""
+    REDIS_PASSWORD: str = ""
 
     # OSS
     IMAGES_URL: str = ""

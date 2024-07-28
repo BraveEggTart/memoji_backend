@@ -1,13 +1,11 @@
 import logging
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Depends
 
 from app.routes.health import routes as health_routes
-from app.routes.memes import routes as memes_routes
 from app.routes.emojis import routes as emojis_routes
-from app.routes.admin import routes as admin_routes
-from app.routes.nsfw import routes as nsfw_routes
-from app.routes.bqb import routes as bqb_routes
+from app.dependences.ratelimit import rate_limit
+# from app.routes.admin import routes as admin_routes
 
 logger = logging.getLogger(__name__)
 api_router = APIRouter(
@@ -30,24 +28,10 @@ api_router = APIRouter(
 api_router.include_router(
     router=health_routes,
 )
-# api_router.include_router(
-#     prefix="/meme",
-#     router=memes_routes
-# )
 api_router.include_router(
     prefix="/emoji",
-    router=bqb_routes
-)
-# api_router.include_router(
-#     prefix="/bqb",
-#     router=bqb_routes
-# )
-# api_router.include_router(
-#     prefix="/admin",
-#     router=admin_routes
-# )
-api_router.include_router(
-    router=nsfw_routes
+    router=emojis_routes,
+    dependencies=[Depends(rate_limit)],
 )
 
 
