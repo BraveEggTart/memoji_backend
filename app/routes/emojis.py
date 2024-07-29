@@ -35,14 +35,16 @@ async def bqb_list(
         ]
     }
 
+    record_time = datetime.now().strftime(settings.DATE_FORMAT)
+    hour = datetime.now().hour
     count_record = await SiteViewer.find_one({
-        "record_time": "",
-        "hour": ""
+        "record_time": record_time,
+        "hour": hour
     })
     if count_record is None:
         await SiteViewer.insert(SiteViewer(
-            record_time=datetime.now().strftime(settings.DATE_FORMAT),
-            hour=datetime.now().hour,
+            record_time=record_time,
+            hour=hour,
             view=1,
         ))
     else:
