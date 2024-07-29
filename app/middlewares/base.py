@@ -23,11 +23,7 @@ class BaseMiddleware:
 
         # make a request object
         request = Request(scope, receive=receive)
-        ip = (
-            request.client.host
-            if request.client is not None
-            else request.headers.get("host", "No IP")
-        )
+        ip = request.headers.get("x-real-ip", "No IP")
         request.state.ip = ip
         # pre hook
         await self.before_request(request)
