@@ -26,15 +26,6 @@ async def bqb_list(
     page: int = Query(1, description="页码数", example=1),
     size: int = Query(20, description="页面记录数量", example=20),
 ):
-    if name is not None and await check_word(name):
-        return Fail(msg="请输入文明用语")
-    filter = {} if name is None else {
-        "$or": [
-            {"name": {"$regex": name}},
-            {"type": {"$regex": name}}
-        ]
-    }
-
     record_time = datetime.now().strftime(settings.DATE_FORMAT)
     hour = datetime.now().hour
     count_record = await SiteViewer.find_one({
@@ -52,6 +43,20 @@ async def bqb_list(
         await count_record.save()
 
     result = []
+    if name is not None and await check_word(name):
+        return Fail(msg="请输入文明用语")
+    elif name in ["", None]:
+        filter = {}
+    else:
+        filter = {} if name is None else {
+            "$or": [
+                {"name": {"$regex": name}},
+                {"type": {"$regex": name}}
+            ]
+        }
+    total = await BQB.find_many(filter).count()
+    pages = total // size + 1
+
     async for record in BQB.find_many(filter, skip=size*(page-1), limit=size):
         result.append({
             "key": record.key,
@@ -61,10 +66,10 @@ async def bqb_list(
         })
     return SuccessExtra(
         data=result,
-        total=30,
+        total=total,
         page=page,
         size=size,
-        pages=page
+        pages=pages
     )
 
 
