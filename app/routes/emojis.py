@@ -47,17 +47,26 @@ async def bqb_list(
         return Fail(msg="请输入文明用语")
     elif name in ["", None]:
         filter = {}
+        records = [await BQB.get_random_one() for _ in range(size)]
+        total = await BQB.count()
     else:
-        filter = {} if name is None else {
+        filter = {
             "$or": [
                 {"name": {"$regex": name}},
                 {"type": {"$regex": name}}
             ]
         }
-    total = await BQB.find_many(filter).count()
-    pages = total // size + 1
+        records = BQB.find_many(filter)
+        total = await records.count()
+        records = await records.find_many(
+            skip=size*(page-1),
+            limit=size,
+        ).to_list()
 
-    async for record in BQB.find_many(filter, skip=size*(page-1), limit=size):
+    pages = total // size + 1
+    for record in records:
+        if record is None:
+            continue
         result.append({
             "key": record.key,
             "url": record.url,
