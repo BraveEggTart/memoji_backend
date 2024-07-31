@@ -43,9 +43,9 @@ async def bqb_list(
         await count_record.save()
 
     result = []
-    if name is not None and await check_word(name):
-        return Fail(msg="请输入文明用语")
-    elif name in ["", None]:
+    # if name is not None and await check_word(name):
+    #     return Fail(msg="请输入文明用语")
+    if name in ["", None]:
         filter = {}
         records = [await BQB.get_random_one() for _ in range(size)]
         total = await BQB.count()
