@@ -117,7 +117,7 @@ async def email_code(
     """
     await send_email(title, body, receivers=[email])
     redis_client.setex(captcha_key, 1800, code)
-    return Success
+    return Success(data=True)
 
 
 # 验证图片验证码
