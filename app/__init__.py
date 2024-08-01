@@ -10,6 +10,7 @@ from fastapi.routing import APIRoute
 
 
 from app.config import settings
+from app.exceptions import register_exceptions
 from app.middlewares import make_middlewares
 from app.models import __beanie_models__
 from app.routes import register_routers
@@ -64,6 +65,9 @@ def create_app() -> FastAPI:
 
     # register routes
     register_routers(app=app, prefix=settings.PREFIX)
+
+    # register exception handler
+    register_exceptions(app=app)
 
     return app
 

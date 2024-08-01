@@ -1,13 +1,13 @@
 import logging
 from datetime import datetime
-from typing import List
+# from typing import List
 
 from fastapi import APIRouter, Query
 
 from app.models.bqb import BQB
 from app.models.siteviewer import SiteViewer
 from app.schemas.response import Success, SuccessExtra, Fail
-from app.utils.nsfw import check_word
+# from app.utils.nsfw import check_word
 from app.config import settings
 
 logger = logging.getLogger(__name__)

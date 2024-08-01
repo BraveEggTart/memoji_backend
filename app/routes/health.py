@@ -16,6 +16,6 @@ routes = APIRouter()
     response_model=Success,
     include_in_schema=False
 )
-def health():
+async def health():
     logger.info("心跳检测正常")
     return Success()

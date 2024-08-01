@@ -50,6 +50,18 @@ class Settings(BaseSettings):
     # init_data
     DATA_URL: str = ""
 
+    # jwt
+    JWT_ALGORITHM: str = "HS256"
+    JWT_TOKEN_EXPIRE_MINUTES: int = 60 * 2
+    JWT_TOKEN_EXPIRE_LONG_MINUTES: int = 60 * 24 * 30
+
+    # Mail Config
+    MAIL_USER: str = ""
+    MAIL_PASSWORD: str = ""
+    MAIL_FROM: str = ""
+    MAIL_PORT: int = 0
+    MAIL_SERVER: str = ""
+
     DEBUGGER: bool = False
     LOG_LEVEL: int = logging.INFO
 
