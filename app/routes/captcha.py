@@ -98,7 +98,7 @@ async def validate_captcha(
     tags=["General"],
     summary="获取邮箱验证码",
     description="用于获取邮箱验证码",
-    response_model=Success[str],
+    response_model=Success[bool],
 )
 async def email_code(
     email: str,
