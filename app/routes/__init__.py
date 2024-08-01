@@ -6,6 +6,7 @@ from app.dependences.ratelimit import rate_limit
 from app.routes.health import routes as health_routes
 from app.routes.emojis import routes as emojis_routes
 from app.routes.captcha import routes as captcha_routes
+from app.routes.login import routes as login_routes
 # from app.routes.admin import routes as admin_routes
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,10 @@ api_router.include_router(
 )
 api_router.include_router(
     router=captcha_routes,
+    dependencies=[Depends(rate_limit)],
+)
+api_router.include_router(
+    router=login_routes,
     dependencies=[Depends(rate_limit)],
 )
 api_router.include_router(
