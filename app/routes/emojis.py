@@ -24,7 +24,7 @@ routes = APIRouter()
 async def bqb_list(
     name: str = Query(None, description="名称", example="困"),
     page: int = Query(1, description="页码数", example=1),
-    size: int = Query(20, description="页面记录数量", example=20),
+    size: int = Query(10, description="页面记录数量", example=20),
 ):
     record_time = datetime.now().strftime(settings.DATE_FORMAT)
     hour = datetime.now().hour
