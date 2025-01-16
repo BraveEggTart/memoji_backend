@@ -28,7 +28,7 @@ jobs:
             cd /code/${{ env.REPOSITORY_NAME }}
           else
             cd /code
-            git clone ssh://git@gitea.just4dream.club:222/KalaLab/${{ env.REPOSITORY_NAME }}.git
+            git clone ssh://git@gitea.just4dream.club:222/BraveEggTart/${{ env.REPOSITORY_NAME }}.git
             cd /code/${{ env.REPOSITORY_NAME }}
           fi
           git pull
