@@ -5,7 +5,7 @@ from fastapi.requests import Request
 from redis import Redis
 
 from app.db.redis import get_redis
-from app.models.users import Users
+# from app.models.users import Users
 from app.schemas.response import Success, Fail
 from app.schemas.login import LoginSchema, LoginEmailSchema
 from app.schemas.jwt import JWTPayloadSchema, JWTOutSchema

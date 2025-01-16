@@ -43,9 +43,9 @@ class Settings(BaseSettings):
     REDIS_PASSWORD: str = ""
 
     # OSS
-    IMAGES_URL: str = ""
-    IMAGES_USERNAME: str = ""
-    IMAGES_PASSWORD: str = ""
+    MINIO_ACCESS_KEY: str = ""
+    MINIO_SECRET_KEY: str = ""
+    MINIO_URL: str = ""
 
     # init_data
     DATA_URL: str = ""

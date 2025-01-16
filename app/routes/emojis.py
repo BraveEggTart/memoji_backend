@@ -4,7 +4,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Query
 
-from app.models.bqb import BQB
+from app.models.emoji import Emoji
 from app.models.siteviewer import SiteViewer
 from app.schemas.response import Success, SuccessExtra, Fail
 # from app.utils.nsfw import check_word
@@ -21,7 +21,7 @@ routes = APIRouter()
     description="获取BQB",
     # response_model=Success[List[str]],
 )
-async def bqb_list(
+async def emoji_list(
     name: str = Query(None, description="名称", example="困"),
     page: int = Query(1, description="页码数", example=1),
     size: int = Query(10, description="页面记录数量", example=20),
@@ -47,8 +47,8 @@ async def bqb_list(
     #     return Fail(msg="请输入文明用语")
     if name in ["", None]:
         filter = {}
-        records = [await BQB.get_random_one() for _ in range(size)]
-        total = await BQB.count()
+        records = [await Emoji.get_random_one() for _ in range(size)]
+        total = await Emoji.count()
     else:
         filter = {
             "$or": [
@@ -56,7 +56,7 @@ async def bqb_list(
                 {"type": {"$regex": name}}
             ]
         }
-        records = BQB.find_many(filter)
+        records = Emoji.find_many(filter)
         total = await records.count()
         records = await records.find_many(
             skip=size*(page-1),
@@ -89,10 +89,10 @@ async def bqb_list(
     description="点赞BQB",
     response_model=Success,
 )
-async def bqb_likes(
+async def emoji_likes(
     key: str = Query(..., description="Key", example="abdcef"),
 ):
-    record = await BQB.find_one({"key": key})
+    record = await Emoji.find_one({"key": key})
     if record is None:
         return Fail(msg="投票失败")
     record.likes += 1
@@ -107,10 +107,10 @@ async def bqb_likes(
     description="点踩BQB",
     response_model=Success,
 )
-async def bqb_dislikes(
+async def emoji_dislikes(
     key: str = Query(..., description="Key", example="abdcef"),
 ):
-    record = await BQB.find_one({"key": key})
+    record = await Emoji.find_one({"key": key})
     if record is None:
         return Fail(msg="投票失败")
     record.dislikes += 1
