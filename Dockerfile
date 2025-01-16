@@ -1,15 +1,10 @@
-FROM python:3.10-slim
-
-ARG PIP_TRUSTED_HOST=mirrors.aliyun.com
-ARG PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple
-
-RUN pip config set global.trusted-host ${PIP_TRUSTED_HOST}  \
-    && pip config set global.index-url ${PIP_INDEX_URL}
+FROM docker.m.daocloud.io/python:3.12.8
 
 WORKDIR /app
-
 COPY . /app 
 
-RUN pip3 install -r requirements.txt --no-cache-dir
+RUN pip install --progress-bar off -U pip -i https://pypi.tuna.tsinghua.edu.cn/simple --timeout 60
+RUN pip install --progress-bar off -U setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple --timeout 60
+RUN pip install --progress-bar off --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-CMD ["python3", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--reload", "--lifespan", "on"]

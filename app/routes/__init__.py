@@ -47,4 +47,4 @@ api_router.include_router(
 
 def register_routers(app: FastAPI, prefix: str = "/api"):
     app.include_router(api_router, prefix=prefix)
-    app.include_router(admin_routes, prefix=prefix)
+    # app.include_router(admin_routes, prefix=prefix)

@@ -1,0 +1,40 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REPOSITORY_NAME: memoji_backend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-22.04
+    container:
+      options: --user=root
+
+    steps:
+
+    - name: Setup SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ vars.DEPLOY_HOST }}
+        username: ${{ vars.DEPLOY_USERNAME }}
+        password: ${{ vars.SSH_PASSWORD }}
+        port: 22
+        script: |
+          if [ -d /code/${{ env.REPOSITORY_NAME }} ]; then
+            cd /code/${{ env.REPOSITORY_NAME }}
+          else
+            cd /code
+            git clone ssh://git@gitea.just4dream.club:222/KalaLab/${{ env.REPOSITORY_NAME }}.git
+            cd /code/${{ env.REPOSITORY_NAME }}
+          fi
+          git pull
+          if docker ps -a --format "{{.Names}}" | grep -q "${{ env.REPOSITORY_NAME }}"; then
+            docker stop ${{ env.REPOSITORY_NAME }}
+            docker rm ${{ env.REPOSITORY_NAME }}
+            docker rmi ${{ env.REPOSITORY_NAME }}
+          fi
+          docker-compose up -d                    
