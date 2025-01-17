@@ -1,10 +1,10 @@
 services:
-  memeoji_backend:
-    image: memeoji_backend
+  memoji_backend:
+    image: memoji_backend
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: memeoji_backend
+    container_name: memoji_backend
     restart: always
     ports:
       - "29015:80"
