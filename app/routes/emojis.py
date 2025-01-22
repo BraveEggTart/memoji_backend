@@ -2,7 +2,10 @@ import logging
 from datetime import datetime
 # from typing import List
 
-from fastapi import APIRouter, Query
+import numpy as np
+from fastapi import APIRouter, Query, UploadFile, File
+from imagehash import average_hash, ImageHash
+from PIL import Image
 
 from app.models.emoji import Emoji
 from app.models.siteviewer import SiteViewer
@@ -116,3 +119,25 @@ async def emoji_dislikes(
     record.dislikes += 1
     await record.save()
     return Success(msg="投票成功")
+
+
+@routes.post(
+    "/similar",
+    tags=["BQB"],
+    summary="相似图片",
+    description="获取相似图片",
+    response_model=Success,
+)
+async def emoji_similar(
+    file: UploadFile = File(...),
+):
+    # 读取文件内容
+    file_hash = average_hash(Image.open(file.file))
+
+    result = []
+    for emoji in await Emoji.all().to_list():
+        image_hash = ImageHash(np.array(emoji.image_hash))
+        if (file_hash-image_hash) < 10:
+            result.append(emoji.url)
+
+    return Success(data=result)
